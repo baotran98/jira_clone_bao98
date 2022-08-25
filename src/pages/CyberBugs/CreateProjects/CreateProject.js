@@ -34,7 +34,7 @@ function CreateProject(props) {
     console.log("Content", content);
   };
   return (
-    <div className="container m-5">
+    <div className="container m-5 animate__animated animate__fadeIn">
       <form onSubmit={handleSubmit} onChange={handleChange} className="form">
         <h4>CREATE PROJECT</h4>
         <div className="form-group mt-3">

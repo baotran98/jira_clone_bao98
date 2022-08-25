@@ -8,6 +8,8 @@ import store from "./redux/configStore.js";
 import { Provider } from "react-redux";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 import { BrowserRouter } from "react-router-dom";
+// animate lib
+import "animate.css";
 
 ReactDOM.render(
   <BrowserRouter>

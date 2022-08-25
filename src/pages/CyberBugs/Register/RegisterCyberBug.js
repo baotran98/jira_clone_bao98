@@ -23,7 +23,7 @@ function RegisterCyberBug(props) {
         marginTop: "30%",
         marginLeft: "28%",
       }}
-      className="w-50"
+      className="w-50 animate__animated animate__fadeIn"
     >
       <h4 className="text-center">Register CyberBugs</h4>
       {/* trường nhập Email */}
@@ -34,9 +34,7 @@ function RegisterCyberBug(props) {
         name="email"
         prefix={<MailOutlined />}
         placeholder="Please input your email..."
-      >
-        {/* <Input /> */}
-      </Input>
+      ></Input>
       <div className="text-danger">{errors.email}</div>
 
       {/* trường nhập Password */}
@@ -48,9 +46,7 @@ function RegisterCyberBug(props) {
         type="password"
         prefix={<LockOutlined />}
         placeholder="Please input your password..."
-      >
-        {/* <Input.Password /> */}
-      </Input>
+      ></Input>
       <div className="text-danger">{errors.passWord}</div>
 
       {/* trường nhập Name */}
@@ -100,6 +96,7 @@ const RegisterWithFormik = withFormik({
       .required("Email is required !!!")
       .email("email is valid !!!"),
     passWord: Yup.string()
+      .required("Password is required !!!")
       .min(6, "Password must have 6 characters")
       .max(32, "Password have max 32 characters"),
     name: Yup.string().required("Name is required !!!"),

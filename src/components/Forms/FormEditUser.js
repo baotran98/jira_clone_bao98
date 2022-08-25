@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Form, Input, Row, Col, Select } from "antd";
-import { Editor } from "@tinymce/tinymce-react";
+import { Form, Input, Row, Col } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { withFormik } from "formik";
 import { connect } from "react-redux";
@@ -22,8 +21,6 @@ function FormEditUser(props) {
   const dispatch = useDispatch();
   const submitForm = (e) => {
     e.preventDefault();
-    // alert("Submit Edit");
-    // console.log("Content Edit:", submitForm);
   };
   // componentDidMount
   useEffect(() => {
@@ -33,11 +30,7 @@ function FormEditUser(props) {
       submitFunction: handleSubmit,
     });
   }, []);
-  const handleEditorChange = (content, editor) => {
-    // dùng setFieldValue để set lại Editor ko có sẵn trong Formik
-    setFieldValue("description", content);
-    // console.log("Content", content);
-  };
+
   return (
     <Form layout="vertical" hideRequiredMark onSubmit={handleSubmit}>
       <Row gutter={16}>
@@ -100,7 +93,7 @@ const EditUserForm = withFormik({
     };
   },
   // Custom sync validation
-  validateSchema: Yup.object().shape({
+  validationSchema: Yup.object().shape({
     email: Yup.string()
       .required("Email is required !!!")
       .email("email is valid !!!"),

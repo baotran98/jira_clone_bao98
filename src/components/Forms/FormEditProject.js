@@ -22,8 +22,9 @@ function FormEditProject(props) {
   const projectCategory = useSelector(
     (state) => state.ProjectCateReducer.arrProjectCate
   );
-  const {} = useSelector((state) => state.DrawerReducer);
+
   const dispatch = useDispatch();
+
   const submitForm = (e) => {
     e.preventDefault();
     // alert("Submit Edit");
@@ -68,7 +69,7 @@ function FormEditProject(props) {
             <Input
               name="creator"
               onChange={handleChange}
-              value={values.creator}
+              value={values.creator.name}
               disabled
             />
           </Form.Item>
@@ -143,18 +144,19 @@ const EditProjectForm = withFormik({
   enableReinitialize: true,
   mapPropsToValues: (props) => {
     const { projectEdit } = props;
+    console.log({ projectEdit });
     return {
       id: projectEdit.id,
       projectName: projectEdit.projectName,
       description: projectEdit.description,
       categoryId: projectEdit.categoryId,
+      creator: projectEdit.creator,
     };
   },
   // Custom sync validation
   validateSchema: Yup.object().shape({}),
 
   handleSubmit: (values, { props, setSubmitting }) => {
-    // console.log("Values:", values);
     // khi người dùng bấm submit => đưa dữ liệu về Backend thông qua API
     // const action = {
     //   type: "UPDATE_PROJECT_SAGA",

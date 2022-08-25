@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { connect } from "react-redux";
 import { USER_SIGNIN_API } from "../../../redux/types/CyberBugs/CyberBugConst";
 import { singinCyberBugAction } from "../../../redux/actions/CyberBugAction";
+import { NavLink } from "react-router-dom";
 
 function LoginCyberBug(props) {
   const { values, touched, errors, handleChange, handleBlur, handleSubmit } =
@@ -18,7 +19,7 @@ function LoginCyberBug(props) {
         marginTop: "36.5%",
         marginLeft: "37%",
       }}
-      className="w-25"
+      className="w-25 animate__animated animate__fadeIn"
     >
       <h4>Login CyberBugs</h4>
       <Input
@@ -44,14 +45,9 @@ function LoginCyberBug(props) {
         {/* <Input.Password /> */}
       </Input>
       <div className="text-danger">{errors.password}</div>
-
-      <div
-        className="mt-3"
-        name="remember"
-        // valuePropName="checked"
-        // wrapperCol={{ offset: 8, span: 16 }}
-      >
-        <Checkbox>Remember me</Checkbox>
+      <div className="mt-2">
+        <NavLink to="/register">Register </NavLink>
+        here !
       </div>
 
       <div>
@@ -70,6 +66,7 @@ const LoginCyberBugsWithFormik = withFormik({
       .required("Email is required !!!")
       .email("email is valid !!!"),
     password: Yup.string()
+      .required("Password is required !!!")
       .min(6, "Password must have 6 characters")
       .max(32, "Password have max 32 characters"),
   }),
@@ -84,8 +81,6 @@ const LoginCyberBugsWithFormik = withFormik({
     // };
     setSubmitting(true);
     props.dispatch(singinCyberBugAction(email, password));
-    // console.log(props);
-    // console.log(values);
   },
 
   displayName: "Login CyberBug",

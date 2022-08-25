@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button, Input, Popconfirm, Select } from "antd";
 import { useDispatch, useSelector, connect } from "react-redux";
 import ReactHtmlParser from "html-react-parser";
@@ -15,6 +15,7 @@ import {
 import {
   ADD_COMMENT_SAGA,
   DELETE_COMMENT_SAGA,
+  EDIT_COMMENT_SAGA,
 } from "../../../redux/types/CyberBugs/CommentConst";
 import { withFormik } from "formik";
 import * as Yup from "yup";
@@ -31,14 +32,14 @@ function ModalCyberBug(props) {
   const { arrTaskType } = useSelector((state) => state.TaskReducer);
   const { projectDetail } = useSelector((state) => state.ProjectReducer);
   const [visibleEditor, setVisibleEditor] = useState(false);
-  const [visibleComment, setVisibleComment] = useState(false);
   const [historyContent, setHistoryContent] = useState(
     taskDetailModel.description
   );
+  const [editCommentVisibleEditor, setEditCommentVisibleEditor] = useState({
+    visible: false,
+    index: 0,
+  });
   const [content, setContent] = useState(taskDetailModel.description);
-  const [contentComment, setContentComment] = useState(
-    taskDetailModel.lstComment.id
-  );
   // hook useDispatch
   const dispatch = useDispatch();
   // hook useEffect
@@ -145,6 +146,61 @@ function ModalCyberBug(props) {
       </div>
     );
   };
+
+  const renderEditComment = (commentDescription, commentId) => {
+    return (
+      <div>
+        <Editor
+          // onInit={(evt, editor) => (editorRef.current = editor)}
+          name="description"
+          initialValue={commentDescription}
+          init={{
+            width: "100%",
+            height: 150,
+            menubar: false,
+            plugins: [
+              "advlist autolink lists link image charmap print preview anchor",
+              "searchreplace visualblocks code fullscreen",
+              "insertdatetime media table paste code help wordcount",
+            ],
+            toolbar:
+              "undo redo | formatselect | " +
+              "bold italic backcolor | alignleft aligncenter " +
+              "alignright alignjustify | bullist numlist outdent indent | " +
+              "removeformat | help",
+            content_style:
+              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+          }}
+          onEditorChange={(content, editor) => {
+            setContent(content);
+          }}
+        />
+        <button
+          className="btn btn-primary me-1 my-1"
+          onClick={() => {
+            console.log(content, commentId);
+            dispatch({
+              type: EDIT_COMMENT_SAGA,
+              commentId: commentId,
+              commentContent: content,
+            });
+            setEditCommentVisibleEditor(false);
+          }}
+        >
+          Save
+        </button>
+        <button
+          className="btn btn-danger "
+          onClick={() => {
+            setEditCommentVisibleEditor(false);
+          }}
+        >
+          Close
+        </button>
+      </div>
+    );
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     dispatch({
@@ -242,22 +298,17 @@ function ModalCyberBug(props) {
               <span>ID: {taskDetailModel.taskId}</span>
             </div>
             <div style={{ display: "flex" }} className="task-click">
-              <div>
-                <i className="fab fa-telegram-plane" />
-                <span style={{ paddingRight: 20 }}>Give feedback</span>
-              </div>
-              <div>
-                <i className="fa fa-link" />
-                <span style={{ paddingRight: 20 }}>Copy link</span>
-              </div>
-              <i className="fa fa-trash-alt" style={{ cursor: "pointer" }} />
+              {/* <i className="fa fa-trash-alt" style={{ cursor: "pointer" }} /> */}
               <button
                 type="button"
                 className="btn btn-light"
                 data-dismiss="modal"
                 aria-label="Close"
+                style={{ background: "rgba(255,255,255,0)" }}
               >
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true" style={{ fontSize: 30 }}>
+                  ×
+                </span>
               </button>
             </div>
           </div>
@@ -321,115 +372,83 @@ function ModalCyberBug(props) {
                       <div className="comment-item">
                         {taskDetailModel.lstComment?.map((comment, index) => {
                           return (
-                            <div
-                              className="display-comment"
-                              style={{ display: "flex" }}
-                              key={index}
-                            >
-                              <div className="avatar">
-                                <img
-                                  src={comment.avatar}
-                                  alt={comment.idUser}
-                                />
-                              </div>
-                              <div>
-                                <p
-                                  className="fw-bold"
-                                  style={{ marginBottom: 5 }}
-                                >
-                                  {comment.name}
-                                </p>
-
+                            <Fragment>
+                              <hr />
+                              <div
+                                className="display-comment"
+                                style={{ display: "flex" }}
+                                key={index}
+                              >
+                                <div className="avatar">
+                                  <img
+                                    src={comment.avatar}
+                                    alt={comment.idUser}
+                                  />
+                                </div>
                                 <div>
-                                  {visibleComment ? (
-                                    <Editor
-                                      name="contentComment"
-                                      onEditorChange={(
-                                        contentComment,
-                                        editor
-                                      ) => {
-                                        // setContent(content);
-                                        // setFieldValue(
-                                        //   "contentComment",
-                                        //   content
-                                        // );
-                                        setContentComment(contentComment);
-                                      }}
-                                      initialValue={comment.contentComment}
-                                      init={{
-                                        height: 150,
-                                        menubar: false,
-                                        plugins: [
-                                          "advlist autolink lists link image charmap print preview anchor",
-                                          "searchreplace visualblocks code fullscreen",
-                                          "insertdatetime media table paste code help wordcount",
-                                        ],
-                                        toolbar:
-                                          "undo redo | formatselect | " +
-                                          "bold italic backcolor | alignleft aligncenter " +
-                                          "alignright alignjustify | bullist numlist outdent indent | " +
-                                          "removeformat | help",
-                                        content_style:
-                                          "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                                      }}
-                                    />
-                                  ) : (
-                                    <p style={{ marginBottom: 5 }}>
-                                      {ReactHtmlParser(comment.commentContent)}
-                                    </p>
-                                  )}
-                                  <button
-                                    onClick={() => {
-                                      setVisibleComment(!visibleComment);
-                                    }}
-                                    className="me-1"
-                                    style={{
-                                      color: "blue",
-                                      border: "none",
-                                      background: "none",
-                                    }}
+                                  <div
+                                    className="fw-bold"
+                                    style={{ marginBottom: 5 }}
                                   >
-                                    Edit
-                                  </button>
-                                  <Popconfirm
-                                    title="Are you sure to delete this comment?"
-                                    onConfirm={() => {
-                                      dispatch({
-                                        type: DELETE_COMMENT_SAGA,
-                                        idComment: comment.id,
-                                      });
-                                    }}
-                                    okText="Yes"
-                                    cancelText="No"
-                                  >
+                                    {comment.name}
+                                  </div>
+                                  <div>
+                                    {editCommentVisibleEditor.index === index &&
+                                    editCommentVisibleEditor.visible ? (
+                                      renderEditComment(
+                                        comment.commentContent,
+                                        comment.id
+                                      )
+                                    ) : (
+                                      <div className="lh-sm">
+                                        {ReactHtmlParser(
+                                          comment.commentContent
+                                        )}
+                                      </div>
+                                    )}
+
                                     <button
+                                      onClick={() => {
+                                        setEditCommentVisibleEditor({
+                                          visible: true,
+                                          index,
+                                        });
+                                      }}
+                                      className="me-1"
                                       style={{
-                                        color: "red",
+                                        color: "blue",
                                         border: "none",
                                         background: "none",
                                       }}
                                     >
-                                      Delete
+                                      Edit
                                     </button>
-                                  </Popconfirm>
-                                  {/* <button
-                                    onClick={() => {
-                                      dispatch({
-                                        type: DELETE_COMMENT_SAGA,
-                                        idComment: comment.id,
-                                      });
-                                    }}
-                                    style={{
-                                      color: "red",
-                                      border: "none",
-                                      background: "none",
-                                    }}
-                                  >
-                                    Delete
-                                  </button> */}
+
+                                    <Popconfirm
+                                      title="Are you sure to delete this comment?"
+                                      onConfirm={() => {
+                                        dispatch({
+                                          type: DELETE_COMMENT_SAGA,
+                                          idComment: comment.id,
+                                        });
+                                      }}
+                                      okText="Yes"
+                                      cancelText="No"
+                                    >
+                                      <button
+                                        style={{
+                                          color: "red",
+                                          border: "none",
+                                          background: "none",
+                                        }}
+                                      >
+                                        Delete
+                                      </button>
+                                    </Popconfirm>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            </Fragment>
                           );
                         })}
                       </div>
@@ -471,10 +490,6 @@ function ModalCyberBug(props) {
                           </option>
                         );
                       })}
-                      {/* <option value={""}>SELECTED FOR DEVELOPMENT</option>
-                      <option value={1}>One</option>
-                      <option value={2}>Two</option>
-                      <option value={3}>Three</option> */}
                     </select>
                   </div>
                   <div className="assignees">
@@ -518,56 +533,6 @@ function ModalCyberBug(props) {
                           </div>
                         );
                       })}
-                      {/* <Popover
-                        style={{ zIndex: "1000" }}
-                        placement="right"
-                        title={"Thêm thành viên"}
-                        trigger="click"
-                        content={() => {}}
-                      > */}
-                      {/* <button
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          border: "none",
-                          background: "none",
-                          marginTop: "3%",
-                          marginBottom: "3%",
-                          color: "blue",
-                        }}
-                      >
-                        <i className="fa fa-plus" style={{ marginRight: 5 }} />
-                        <span>Add</span>
-                      </button> */}
-
-                      {/* </Popover> */}
-                      {/* <Select
-                        className="ms-2"
-                        name="listUser"
-                        options={projectDetail.members
-                          ?.filter((mem) => {
-                            let index = taskDetailModel.assigness?.findIndex(
-                              (user) => user.id === mem.userId
-                            );
-                            if (index !== -1) {
-                              return false;
-                            }
-                            return true;
-                          })
-                          .map((mem, index) => {
-                            return { value: mem.userId, label: mem.name };
-                          })}
-                        optionFilterProp="label"
-                        onSelect={(value) => {
-                          if (value === "0") {
-                            return;
-                          }
-                          let userSelect = projectDetail.members.find(
-                            (mem) => mem.userId === value
-                          );
-                          userSelect = { ...userSelect, id: userSelect.userId };
-                        }}
-                      ></Select> */}
 
                       <select
                         className="form-select w-100 ms-2 mt-1 mb-1"

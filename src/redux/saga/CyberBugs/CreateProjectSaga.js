@@ -1,6 +1,7 @@
 import { takeLatest, call, put, delay } from "redux-saga/effects";
 import { cyberBugService } from "../../../services/CyberBugService";
 import { STATUS_CODE } from "../../../util/constants/settingSystem";
+import { Notification } from "../../../util/notifications/Notification";
 import { DISPLAY_LOADING, HIDE_LOADING } from "../../types/LoadingConst";
 
 // quản lý các action Saga
@@ -18,10 +19,7 @@ function* createProjectSaga(action) {
     );
     // gọi API thành công thì dùng put để dispatch lên reducer
     if (status === STATUS_CODE.SUCCESS) {
-      //   yield put({
-      //     type: "",
-      //     data: newProject,
-      //   });
+      Notification("success", "Create project successfuly");
     }
     console.log("New Project", data);
   } catch (error) {

@@ -30,7 +30,6 @@ export const LoginTemplate = (props) => {
                 width={width / 2}
                 style={{
                   height: height,
-                  // backgroundImage: `url(${require("../../assets/loginBG/login_BG.jpg")}) `,
                   backgroundImage: `url(https://picsum.photos/${Math.round(
                     width / 2
                   )}/${height})`,

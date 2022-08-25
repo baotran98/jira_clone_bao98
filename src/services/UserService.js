@@ -25,7 +25,10 @@ export class UserService extends BaseService {
     return this.get(`Users/getUserByProjectId?idProject=${idProject}`);
   };
   // lấy hết dữ liệu user từ API
-  getAllUser = () => {
+  getAllUser = (keyword = "") => {
+    if (keyword.trim() !== "") {
+      return this.get(`/Users/getUser?keyword=${keyword}`);
+    }
     return this.get(`Users/getUser`);
   };
   // sửa lại dữ liệu user

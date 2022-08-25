@@ -16,7 +16,6 @@ import {
   USER_LOGIN,
 } from "../../../util/constants/settingSystem";
 import { Notification } from "../../../util/notifications/Notification";
-// import { history } from "../../../util/libs/history";
 import {
   LOCAL_STORAGE_LOGIN,
   USER_SIGNIN_API,
@@ -33,6 +32,7 @@ import {
 import { DISPLAY_LOADING, HIDE_LOADING } from "../../types/LoadingConst";
 
 // quản lý các action Saga
+/* Chức năng signinUser với Saga */
 function* SigninSaga(action) {
   yield put({
     type: DISPLAY_LOADING,
@@ -56,7 +56,10 @@ function* SigninSaga(action) {
     let history = yield select((state) => state.HistoryReducer.history);
     history.push("/");
   } catch (error) {
-    console.log(error.response.data);
+    if (error.response?.data.statusCode === 400) {
+      Notification("error", `${error.response?.data.message}`);
+    }
+    console.log(error.response?.data);
   }
   yield put({
     type: HIDE_LOADING,
@@ -78,13 +81,19 @@ function* signUpSaga(action) {
     const { data, status } = yield call(() =>
       userService.signupCyberBug(action.newUser)
     );
+    if (status === STATUS_CODE.SUCCESS) {
+      Notification("success", "Register successfuly !");
+    }
     // dùng History và hàm push để chuyển trang cần đến sau khi đăng ký
     // action.userLogin.history.push("/login");
     let history = yield select((state) => state.HistoryReducer.history);
     history.push("/login");
     console.log("Register", data);
   } catch (error) {
-    console.log(error.response.data);
+    if (error.response?.data.statusCode === 400) {
+      Notification("error", `${error.response?.data.message}`);
+    }
+    console.log(error.response?.data);
   }
   yield put({
     type: HIDE_LOADING,
@@ -193,7 +202,9 @@ function* getAllUserSaga(action) {
   yield delay(1000);
   // gọi API
   try {
-    const { data, status } = yield call(() => userService.getAllUser(action));
+    const { data, status } = yield call((keyword = "") =>
+      userService.getAllUser(keyword)
+    );
     yield put({
       type: GET_ALL_USER,
       userList: data.content,

@@ -13,6 +13,7 @@ import {
   GET_TASK_DETAIL_SAGA,
 } from "../../types/CyberBugs/TaskConst";
 import { DISPLAY_LOADING, HIDE_LOADING } from "../../types/LoadingConst";
+import Swal from "sweetalert2";
 
 // quản lý các action Saga
 function* getAllCommentSaga(action) {
@@ -40,6 +41,15 @@ function* addCommentSaga(action) {
     const { data, status } = yield call(() =>
       commentService.addComment(action.newComment)
     );
+    if (status === STATUS_CODE.SUCCESS) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Thêm bình luận thành công",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
     const { newComment } = action;
     yield put({
       type: GET_TASK_DETAIL_SAGA,
@@ -47,7 +57,7 @@ function* addCommentSaga(action) {
     });
     console.log("Add comment", data);
   } catch (error) {
-    console.log(error.response.data);
+    console.log(error.response?.data);
   }
   // tắt Loading
   yield put({
@@ -66,17 +76,32 @@ function* editCommentSaga(action) {
   });
   yield delay(1000);
   // gọi API
+  let { commentId, commentContent } = action;
   try {
     const { data, status } = yield call(() =>
-      commentService.editComment(action.id)
+      commentService.editComment(commentId, commentContent)
     );
-    const { id } = action;
-    yield put({
-      type: GET_TASK_DETAIL_SAGA,
-      taskId: id.taskId,
-    });
+    if (status === STATUS_CODE.SUCCESS) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Sửa bình luận thành công",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+
     console.log("Edit comment", data);
   } catch (error) {
+    if (error.response?.data.statusCode === 403) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Bạn không được quyền sửa bình luận của người khác",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
     console.log(error.response.data);
   }
   // tắt Loading
@@ -101,17 +126,27 @@ function* deleteCommentSaga(action) {
       commentService.deleteComment(action.idComment)
     );
     if (status === STATUS_CODE.SUCCESS) {
-      Notification("success", "Delete comment successfuly !");
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Xóa bình luận thành công",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
-    // const { idComment } = action;
-    // yield put({
-    //   type: GET_ALL_COMMENT_SAGA,
-    //   taskId: idComment.taskId,
-    // });
+
     console.log("Delete comment", data);
   } catch (error) {
-    Notification("error", "Delete comment fail !");
-    console.log(error.response.data);
+    if (error.response?.data.statusCode === 403) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Bạn không được quyền xóa bình luận của người khác",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+    console.log(error.response?.data);
   }
   // tắt Loading
   yield put({

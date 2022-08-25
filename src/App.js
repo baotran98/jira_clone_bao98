@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { Switch, Route, BrowserRouter, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import Modal from "./HOC/Modal/Modal";
-import Header from "./components/Home/Header/Header";
-import Login from "./pages/Login/Login";
-import PageNotFound from "./pages/PageNotFound/PageNotFound";
+// import Modal from "./HOC/Modal/Modal";
+// import Header from "./components/Home/Header/Header";
+// import Login from "./pages/Login/Login";
+// import PageNotFound from "./pages/PageNotFound/PageNotFound";
 import LoadingComponent from "./components/GlobalSettings/LoadingComponent/LoadingComponent";
-import { HomeTemplate } from "./templates/HomeTemplates/HomeTemplate";
 import { LoginTemplate } from "./templates/HomeTemplates/LoginTemplate";
 import { CyberBugTemplate } from "./templates/HomeTemplates/CyberBugTemplate";
 import LoginCyberBug from "./pages/CyberBugs/LoginCyberBugs/LoginCyberBug";
@@ -55,7 +54,7 @@ function App() {
           path="/projectdetail/:projectId"
           Component={IndexCyberBugs}
         />
-        <HomeTemplate exact path="*" Component={PageNotFound} />
+        <CyberBugTemplate exact path="*" Component={ProjectManagement} />
       </Switch>
     </>
   );

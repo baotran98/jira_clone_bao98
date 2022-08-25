@@ -1,16 +1,34 @@
+import { Avatar } from "antd";
 import React from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { TOKEN, USER_LOGIN } from "../../util/constants/settingSystem";
 
 export default function MenuCyberBug() {
+  const { history } = useSelector((state) => state.HistoryReducer);
+  let infoUser = [];
+  if (localStorage.getItem("USER_LOGIN")) {
+    infoUser = JSON.parse(localStorage.getItem("USER_LOGIN"));
+  }
   return (
-    <div className="menu">
+    <div className="menu shadow">
       <div className="account">
         <div className="avatar">
-          <img src={require("../../assets/img/download.jfif")} alt="avatar" />
+          <Avatar src="https://joeschmoe.io/api/v1/random" />
         </div>
         <div className="account-info">
-          <p>CyberLearn.vn</p>
-          <p>Report bugs</p>
+          <p className="fw-bold">{infoUser.name}</p>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              localStorage.removeItem(USER_LOGIN);
+              localStorage.removeItem(TOKEN);
+              history.push("/login");
+              window.location.reload(); // xóa hoàn toàn thông tin user khỏi Reducer
+            }}
+          >
+            [ <span className="text-danger">Đăng xuất</span> ]
+          </div>
         </div>
       </div>
       <div className="control">
@@ -60,28 +78,6 @@ export default function MenuCyberBug() {
           </NavLink>
         </div>
       </div>
-      {/* <div className="feature">
-        <div>
-          <i className="fa fa-truck" />
-          <span>Releases</span>
-        </div>
-        <div>
-          <i className="fa fa-equals" />
-          <span>Issues and filters</span>
-        </div>
-        <div>
-          <i className="fa fa-paste" />
-          <span>Pages</span>
-        </div>
-        <div>
-          <i className="fa fa-location-arrow" />
-          <span>Reports</span>
-        </div>
-        <div>
-          <i className="fa fa-box" />
-          <span>Components</span>
-        </div>
-      </div> */}
     </div>
   );
 }

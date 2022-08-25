@@ -1,4 +1,3 @@
-import { result } from "lodash";
 import React from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useDispatch } from "react-redux";
@@ -47,7 +46,7 @@ export default function ContentMain(props) {
                     // ref={provided.innerRef}
                     // {...provided.droppableProps}
                     key={index}
-                    className="card pb-3"
+                    className="card pb-3 animate__animated animate__fadeIn"
                     style={{ width: "17rem", height: "auto" }}
                   >
                     <div className="card-header">{listTask.statusName}</div>
@@ -92,7 +91,7 @@ export default function ContentMain(props) {
                                   >
                                     <div className="block-left">
                                       {/* <i className="fa fa-bookmark" />
-                                <i className="fa fa-arrow-up" /> */}
+                                        <i className="fa fa-arrow-up" /> */}
                                       <span className="fw-semibold">
                                         {task.priorityTask.priority}
                                       </span>

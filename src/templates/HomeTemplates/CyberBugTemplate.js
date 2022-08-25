@@ -1,15 +1,17 @@
 import React, { Fragment } from "react";
-import { Route } from "react-router-dom";
-// import ContentMain from "../../components/CyberBugs/Main/ContentMain";
-// import HeaderMain from "../../components/CyberBugs/Main/HeaderMain";
-// import InfoMain from "../../components/CyberBugs/Main/InfoMain";
+import { Redirect, Route } from "react-router-dom";
 import MenuCyberBug from "../../components/CyberBugs/MenuCyberBug";
 import ModalCyberBug from "../../components/CyberBugs/ModalCyberBug/ModalCyberBug";
 import SidebarCyberBug from "../../components/CyberBugs/SidebarCyberBug";
+import { USER_LOGIN } from "../../util/constants/settingSystem";
 import "../HomeTemplates/css/CyberBugTemplate.css";
 
 export const CyberBugTemplate = (props) => {
   const { Component, ...restParam } = props;
+  if (!localStorage.getItem(USER_LOGIN)) {
+    alert("Bạn chưa đăng nhập để vào trang này!");
+    return <Redirect to="/login" />;
+  }
   return (
     <Route
       {...restParam}

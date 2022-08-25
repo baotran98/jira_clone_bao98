@@ -1,13 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Avatar,
-  Space,
-  Table,
-  Tag,
-  Popconfirm,
-  Input,
-  AutoComplete,
-} from "antd";
+import { Avatar, Space, Table, Tag, Popconfirm, Input } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import FormEditUser from "../../../components/Forms/FormEditUser";
@@ -16,20 +8,17 @@ import {
   EDIT_USER,
   GET_ALL_USER_SAGA,
 } from "../../../redux/types/CyberBugs/UserConst";
+import { theoDoiGetAllUserSaga } from "../../../redux/saga/CyberBugs/CyberBugSaga";
+
 const { Search } = Input;
-const onSearch = (value) => console.log(value);
 
 export default function UserManagement(props) {
   // lấy dữ liệu về Component từ Reducer
-  // const projectList = useSelector(
-  //   (state) => state.ProjectCyberBugReducer.projectList
-  // );
   const { userList } = useSelector((state) => state.UserReducer);
   const { userSearch } = useSelector((state) => state.UserReducer);
   // sử dụng dispatch để gọi action
   const dispatch = useDispatch();
   // hook useState
-  // const [value, setValue] = useState("");
   const [searchValue, setSearchValue] = useState([]);
   const [options, setOptions] = useState([]);
   // dùng hàm searchRef để DebounceSearch tìm kiếm tới API
@@ -43,12 +32,17 @@ export default function UserManagement(props) {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
 
+  const onSearch = (value) => {
+    dispatch({ type: GET_ALL_USER_SAGA, value });
+    console.log({ value });
+  };
+
   const handleChange = (pagination, filters, sorter) => {
     console.log("Various parameters", pagination, filters, sorter);
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
-
+  // tìm kiếm người dùng dựa trên API
   const handleSearch = (e) => {
     const key = e.target.value;
     const newSearch = userList?.filter((value) => {
@@ -145,7 +139,7 @@ export default function UserManagement(props) {
               };
               dispatch(actionEditUser);
             }}
-            className="btn btn-primary"
+            className="btn btn-primary shadow"
             style={{ fontSize: 15 }}
           >
             <EditOutlined />
@@ -161,7 +155,7 @@ export default function UserManagement(props) {
             okText="Yes"
             cancelText="No"
           >
-            <button className="btn btn-danger" style={{ fontSize: 15 }}>
+            <button className="btn btn-danger shadow" style={{ fontSize: 15 }}>
               <DeleteOutlined />
             </button>
           </Popconfirm>
@@ -186,9 +180,14 @@ export default function UserManagement(props) {
         />
       </Space>
       <Table
+        className="animate__animated animate__fadeIn"
         columns={columns}
         rowKey={"id"}
-        dataSource={searchValue.length && searchValue ? searchValue : userList}
+        dataSource={
+          searchValue.length && searchValue
+            ? searchValue.slice(0, 50)
+            : userList.slice(0, 50)
+        }
         onChange={handleChange}
       />
     </div>

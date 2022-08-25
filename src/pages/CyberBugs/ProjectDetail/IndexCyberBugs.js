@@ -8,7 +8,7 @@ import parse from "html-react-parser";
 export default function IndexCyberBugs(props) {
   const { projectDetail } = useSelector((state) => state.ProjectReducer);
   const dispatch = useDispatch();
-  console.log("Project Detail:", projectDetail);
+
   useEffect(() => {
     // khi người dùng link qua trang này bằng thẻ Navlink hoặc tự gõ Url thì ta sẽ lấy tham số từ Url => gọi Saga
     const { projectId } = props.match.params;

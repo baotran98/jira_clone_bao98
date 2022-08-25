@@ -58,6 +58,7 @@ export default function ProjectManagement(props) {
       title: "ID",
       dataIndex: "id",
       key: "id",
+      defaultSortOrder: "descend",
       sorter: (a, b) => {
         return a.id - b.id;
       },
@@ -144,6 +145,7 @@ export default function ProjectManagement(props) {
                                 <td>{user.userId}</td>
                                 <td>
                                   <img
+                                    className="shadow"
                                     src={user.avatar}
                                     width="40"
                                     height="40"
@@ -162,7 +164,7 @@ export default function ProjectManagement(props) {
                                         },
                                       });
                                     }}
-                                    className="btn btn-danger p-2 "
+                                    className="btn btn-danger px-2 py-1 "
                                   >
                                     <CloseOutlined
                                       style={{ fontSize: "20px" }}
@@ -177,7 +179,7 @@ export default function ProjectManagement(props) {
                     );
                   }}
                 >
-                  <Avatar src={member.avatar} />
+                  <Avatar className="shadow" src={member.avatar} />
                 </Popover>
               );
             })}
@@ -268,7 +270,7 @@ export default function ProjectManagement(props) {
               };
               dispatch(actionEditProject);
             }}
-            className="btn btn-primary"
+            className="btn btn-primary shadow"
             style={{ fontSize: 15 }}
           >
             <EditOutlined />
@@ -284,7 +286,7 @@ export default function ProjectManagement(props) {
             okText="Yes"
             cancelText="No"
           >
-            <button className="btn btn-danger" style={{ fontSize: 15 }}>
+            <button className="btn btn-danger shadow" style={{ fontSize: 15 }}>
               <DeleteOutlined />
             </button>
           </Popconfirm>
@@ -303,8 +305,6 @@ export default function ProjectManagement(props) {
         <Search
           type="text"
           placeholder="Nhập tên dự án cần tìm..."
-          // value={searchText}
-          // onSearch={dataSearch}
           onChange={(e) => {
             setSearchText(e.target.value);
           }}
@@ -313,6 +313,7 @@ export default function ProjectManagement(props) {
         />
       </Space>
       <Table
+        className="animate__animated animate__fadeIn"
         columns={columns}
         rowKey={"id"}
         dataSource={handleSearch(projectList)}
