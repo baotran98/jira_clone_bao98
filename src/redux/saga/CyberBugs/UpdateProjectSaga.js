@@ -33,7 +33,7 @@ function* updateProjectSaga(action) {
     });
     console.log("Update Project", data);
   } catch (error) {
-    console.log(error.response.data);
+    console.log(error.response?.data);
   }
   // tắt Loading
   yield put({

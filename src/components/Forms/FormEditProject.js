@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Form, Input, Row, Col, Select } from "antd";
 import { Editor } from "@tinymce/tinymce-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,12 +46,29 @@ function FormEditProject(props) {
     setFieldValue("description", content);
     // console.log("Content", content);
   };
+
+  // lấy thông tin project từ LocalStorage
+  let detailProject = [];
+  if (localStorage.getItem("projectParams")) {
+    detailProject = JSON.parse(localStorage.getItem("projectParams"));
+  }
+
   return (
     <Form layout="vertical" hideRequiredMark onSubmit={handleSubmit}>
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="ID">
             <Input name="id" value={values.id} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Tên người tạo">
+            <Input
+              name="creator"
+              onChange={handleChange}
+              value={detailProject.creator.name}
+              disabled
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -65,27 +82,20 @@ function FormEditProject(props) {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Tên người tạo">
-            <Input
-              name="creator"
-              onChange={handleChange}
-              value={values.creator.name}
-              disabled
-            />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
           <Form.Item label="Loại dự án">
             <Select
               name="categoryId"
+              onChange={(value) => {
+                setFieldValue("categoryId", value);
+              }}
               value={values.categoryId}
               placeholder="Chọn loại dự án"
             >
-              {projectCategory?.map((item, index) => {
+              {projectCategory?.map((item) => {
                 return (
-                  <Option key={index} value={item.id}>
-                    {item.projectCategoryName}
-                  </Option>
+                  <Fragment key={item.id}>
+                    <Option value={item.id}>{item.projectCategoryName}</Option>
+                  </Fragment>
                 );
               })}
             </Select>
@@ -150,7 +160,7 @@ const EditProjectForm = withFormik({
       projectName: projectEdit.projectName,
       description: projectEdit.description,
       categoryId: projectEdit.categoryId,
-      creator: projectEdit.creator,
+      creator: projectEdit.creator.id,
     };
   },
   // Custom sync validation

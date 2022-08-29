@@ -269,6 +269,7 @@ export default function ProjectManagement(props) {
                 projectEditModel: record,
               };
               dispatch(actionEditProject);
+              localStorage.setItem("projectParams", JSON.stringify(record));
             }}
             className="btn btn-primary shadow"
             style={{ fontSize: 15 }}
